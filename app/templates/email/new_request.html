@@ -1,0 +1,22 @@
+<p>Hello Manager,</p>
+
+<p>A new leave request has been submitted:</p>
+
+<ul>
+    <li><b>Employee:</b> {{ user.username }} ({{ user.email }})</li>
+    <li><b>Requested Date:</b> {{ request.request_date.strftime('%Y-%m-%d') }}</li>
+    <li><b>Requested Shift:</b> {{ request.shift }}</li>
+    <li><b>Submitted At:</b> {{ request.submitted_at.strftime('%Y-%m-%d %H:%M') }} UTC</li>
+</ul>
+
+<p>You can review and approve/disapprove this request by logging into the LeaveFlow application.</p>
+
+{# Optional: Add a direct link if your setup allows easy URL generation #}
+{# <p><a href="{{ url_for('main.review_request', request_id=request.id, _external=True) }}">Review Request Directly</a>
+</p>
+#}
+{# Make sure _external=True is used for links in emails #}
+{# For the direct link to work reliably, you might need to configure SERVER_NAME in Flask config #}
+
+<p>Thank you,</p>
+<p>LeaveFlow System</p>

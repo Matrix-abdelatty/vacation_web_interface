@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Leave Report</h1>
+
+{# Balance Summary Table #}
+<div class="card mb-4">
+    <div class="card-header">Current Balance Summary</div>
+    <div class="card-body">
+        {% if balances_data %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-sm">
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        {% for lt in leave_types %}
+                        <th class="text-center">{{ lt.name }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for emp_id, data in balances_data.items() %}
+                    <tr>
+                        <td>{{ data.user.username }}</td>
+                        {% for lt in leave_types %}
+                        <td class="text-center">{{ data.balances.get(lt.name, 'N/A')|round(1) }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="{{ leave_types|length + 1 }}">No employee data found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p>No balance data available.</p>
+        {% endif %}
+    </div>
+</div>
+
+
+{# Approved Requests Table #}
+<div class="card">
+    <div class="card-header">Approved Leave Details</div>
+    <div class="card-body">
+        {% if requests %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-sm">
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Leave Type</th>
+                        <th>Date Taken</th>
+                        <th>Shift</th>
+                        <th>Approved On</th>
+                        <th>Approved By</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for req in requests %}
+                    <tr>
+                        <td>{{ req.requester.username }}</td>
+                        <td>{{ req.leave_type.name }}</td>
+                        <td>{{ req.request_date.strftime('%Y-%m-%d') }}</td>
+                        <td>{{ req.shift }}</td>
+                        <td>{{ req.reviewed_at.strftime('%Y-%m-%d %H:%M') if req.reviewed_at else 'N/A' }} UTC</td>
+                        <td>{{ req.reviewer.username if req.reviewer else 'N/A' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p>No approved leave requests found.</p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

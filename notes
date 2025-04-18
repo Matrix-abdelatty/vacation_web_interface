@@ -1,0 +1,49 @@
+Stop the Flask server.
+
+Delete the database file: leaveflow.db.
+
+Delete the entire migrations/ folder.
+
+Re-initialize migrations:
+
+
+flask db init
+
+flask db migrate -m "Create initial schema with leave balances"
+
+flask db upgrade
+--------------------------------------------
+--------------------------------------------
+-------------------------------------------
+--------------------------------------------
+
+Step 1.4: Add Initial Leave Types (Optional but Recommended)
+
+
+flask shell
+
+----
+from app import db
+from app.models import LeaveType
+
+# Check if they already exist
+if not LeaveType.query.filter_by(name='Annual').first():
+    lt1 = LeaveType(name='Annual', description='Standard annual vacation days')
+    db.session.add(lt1)
+    print("Added Annual Leave Type")
+
+if not LeaveType.query.filter_by(name='Casual').first():
+    lt2 = LeaveType(name='Casual', description='For unforeseen personal needs')
+    db.session.add(lt2)
+    print("Added Casual Leave Type")
+
+if not LeaveType.query.filter_by(name='Instead Of').first():
+    lt3 = LeaveType(name='Instead Of', description='Time off earned in lieu of overtime or holiday work')
+    db.session.add(lt3)
+    print("Added Instead Of Leave Type")
+
+db.session.commit()
+print("Leave types checked/added.")
+exit()
+
+--

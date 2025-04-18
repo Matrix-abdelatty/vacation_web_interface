@@ -1,0 +1,16 @@
+Hello Manager,
+
+A new leave request has been submitted:
+
+* Employee: {{ user.username }} ({{ user.email }})
+* Requested Date: {{ request.request_date.strftime('%Y-%m-%d') }}
+* Requested Shift: {{ request.shift }}
+* Submitted At: {{ request.submitted_at.strftime('%Y-%m-%d %H:%M') }} UTC
+
+You can review and approve/disapprove this request by logging into the LeaveFlow application.
+
+{# Optional direct link #}
+{# Review Request: {{ url_for('main.review_request', request_id=request.id, _external=True) }} #}
+
+Thank you,
+LeaveFlow System

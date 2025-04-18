@@ -1,0 +1,108 @@
+{# File: app/templates/manager/_request_list.html #}
+
+{# Accept csrf_token_value as an argument with a default of None #}
+{% macro render_request_table(requests, show_actions=False, csrf_token_value=None) %}
+{% if requests %}
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Requested Date</th>
+                <th>Shift</th>
+                <th>Submitted</th>
+                <th>Status</th>
+                {% if show_actions %}
+                <th>Actions</th>
+                {% else %}
+                <th>Reviewed By</th>
+                <th>Reviewed At</th>
+                <th>Comment</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for req in requests %}
+            <tr>
+                <td>{{ req.requester.username }} ({{ req.requester.email }})</td>
+                <td>{{ req.request_date.strftime('%Y-%m-%d') }}</td>
+                <td>{{ req.shift }}</td>
+                <td>{{ req.submitted_at.strftime('%Y-%m-%d %H:%M') }} UTC</td> {# Added UTC for clarity #}
+                <td>
+                    <span class="badge
+                            {% if req.status == 'Pending' %} bg-warning text-dark
+                            {% elif req.status == 'Approved' %} bg-success
+                            {% elif req.status == 'Disapproved' %} bg-danger
+                            {% else %} bg-secondary
+                            {% endif %}">
+                        {{ req.status }}
+                    </span>
+                </td>
+                {% if show_actions %}
+                <td>
+                    {# Action Buttons using small forms for POST method and CSRF #}
+                    <form action="{{ url_for('main.approve_request', request_id=req.id) }}" method="POST"
+                        style="display: inline;">
+                        {# Use the passed variable csrf_token_value #}
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token_value }}">
+                        <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                    </form>
+
+                    {# Button to trigger modal or simple disapprove #}
+                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#disapproveModal-{{ req.id }}">
+                        Disapprove
+                    </button>
+
+                    <!-- Disapprove Modal -->
+                    <div class="modal fade" id="disapproveModal-{{ req.id }}" tabindex="-1"
+                        aria-labelledby="disapproveModalLabel-{{ req.id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form action="{{ url_for('main.disapprove_request', request_id=req.id) }}"
+                                    method="POST">
+                                    {# Use the passed variable csrf_token_value #}
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token_value }}">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="disapproveModalLabel-{{ req.id }}">Disapprove
+                                            Request</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Disapproving request from <strong>{{ req.requester.username }}</strong> for
+                                            <strong>{{ req.request_date.strftime('%Y-%m-%d') }} ({{ req.shift
+                                                }})</strong>.
+                                        </p>
+                                        <div class="mb-3">
+                                            <label for="comment-{{ req.id }}" class="col-form-label">Reason
+                                                (Optional):</label>
+                                            <textarea class="form-control" id="comment-{{ req.id }}"
+                                                name="comment"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Cancel</button>
+                                        <button type="submit" class="btn btn-danger">Confirm Disapproval</button>
+                                    </div>
+                                </form> {# End of modal form #}
+                            </div> {# End of modal-content #}
+                        </div> {# End of modal-dialog #}
+                    </div> {# End of modal fade #}
+                </td>
+                {% else %} {# Corresponds to if not show_actions #}
+                <td>{{ req.reviewer.username if req.reviewer else 'N/A' }}</td>
+                <td>{{ req.reviewed_at.strftime('%Y-%m-%d %H:%M') if req.reviewed_at else 'N/A' }} UTC</td> {# Added UTC
+                #}
+                <td>{{ req.manager_comment or 'N/A' }}</td>
+                {% endif %} {# End of if show_actions #}
+            </tr>
+            {% endfor %} {# End of loop through requests #}
+        </tbody>
+    </table>
+</div> {# End of table-responsive #}
+{% else %} {# Corresponds to if requests #}
+<p>No requests found matching the current filter.</p>
+{% endif %} {# End of if requests #}
+{% endmacro %} {# End of render_request_table macro #}

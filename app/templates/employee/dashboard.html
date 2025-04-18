@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>My Leave Requests</h1>
+<a href="{{ url_for('main.request_leave') }}" class="btn btn-success mb-3">Request New Leave</a>
+
+{% if requests %}
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Date Requested</th>
+            <th>Shift</th>
+            <th>Submission Date</th>
+            <th>Status</th>
+            <th>Manager Comment</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for req in requests %}
+        <tr>
+            <td>{{ req.request_date.strftime('%Y-%m-%d') }}</td>
+            <td>{{ req.shift }}</td>
+            <td>{{ req.submitted_at.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td>
+                <span class="badge
+                    {% if req.status == 'Pending' %} bg-warning text-dark
+                    {% elif req.status == 'Approved' %} bg-success
+                    {% elif req.status == 'Disapproved' %} bg-danger
+                    {% else %} bg-secondary
+                    {% endif %}">
+                    {{ req.status }}
+                </span>
+            </td>
+            <td>{{ req.manager_comment or 'N/A' }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>You have not submitted any leave requests yet.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% from "_form_helpers.html" import render_field %}
+
+{% block content %}
+<h1>Register New User</h1>
+<p>Create an account to use LeaveFlow.</p>
+<form action="{{ url_for('main.register') }}" method="post" novalidate class="needs-validation"> {# Use blueprint prefix
+    for url_for #}
+    {{ form.hidden_tag() }} {# CSRF token #}
+
+    <div class="mb-3">
+        {{ render_field(form.username) }}
+    </div>
+    <div class="mb-3">
+        {{ render_field(form.email) }}
+    </div>
+    <div class="mb-3">
+        {# Using kwargs to add help text #}
+        {{ render_field(form.password) }}
+
+
+    </div>
+    <div class="mb-3">
+        {{ render_field(form.password2) }}
+    </div>
+    <div class="mb-3">
+        {{ render_field(form.role) }} {# Macro should handle form-select class now #}
+    </div>
+
+    <div class="mt-4">
+        {{ form.submit(class="btn btn-primary w-100") }}
+    </div>
+</form>
+
+<p class="mt-3 text-center">
+    Already have an account? <a href="{{ url_for('main.login') }}">Log In</a> {# Use blueprint prefix #}
+</p>
+{% endblock %}

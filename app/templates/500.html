@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Internal Server Error (500)</h1>
+<p>An unexpected error has occurred. The administrator has been notified.</p>
+<p>We are sorry for the inconvenience.</p>
+{# Ensure url_for is fixed here too #}
+<p><a href="{{ url_for('main.landing_page') }}">Back to Home</a></p>
+{% endblock %}
+
+{# Make sure there are NO other {% block content %} or {% endblock %} tags below this line #}

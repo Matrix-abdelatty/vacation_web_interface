@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% from "_form_helpers.html" import render_field %}
+
+{% block content %}
+<h1>Request Annual Leave</h1>
+<form action="" method="post" novalidate>
+    {{ form.hidden_tag() }} {# CSRF token #}
+
+    {# Add Leave Type Field #}
+    <div class="mb-3">
+        {{ render_field(form.leave_type) }} {# Macro should handle select styling #}
+    </div>
+
+    <div class="mb-3">
+        {{ render_field(form.request_date) }}
+    </div>
+    <div class="mb-3">
+        {{ render_field(form.shift) }} {# Macro should handle select styling #}
+    </div>
+    <p>{{ form.submit(class="btn btn-primary") }}</p>
+</form>
+{% endblock %}

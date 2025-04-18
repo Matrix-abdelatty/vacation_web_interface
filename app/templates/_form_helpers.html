@@ -1,0 +1,41 @@
+{% macro render_field(field, kwargs={}) %}
+<!-- **** HELPER MACRO V3 LOADED **** --> {# Add this line #}
+
+{# Combines field label and input, adds Bootstrap classes, displays errors, and optional help text #}
+{{ field.label(class="form-label") }}
+
+{# Extract help_text from kwargs *before* rendering the field #}
+{% set help_text = kwargs.pop('help_text', None) %}
+
+{# Determine default class based on field type #}
+{% set default_css = 'form-control' %}
+{% if field.type == 'SelectField' %}
+{% set default_css = 'form-select' %}
+{% endif %}
+{# Allow overriding default via 'class' kwarg, but keep default if not provided #}
+{% set css_class = kwargs.pop('class', default_css) %}
+
+{# Add is-invalid class if field has errors #}
+{% if field.errors %}
+{% set css_class = css_class + ' is-invalid' %}
+{% endif %}
+
+{# Render the field with calculated classes and remaining kwargs #}
+{{ field(class=css_class, **kwargs) }}
+
+{# Display validation errors #}
+{% if field.errors %}
+<div class="invalid-feedback d-block"> {# Use d-block for better display #}
+    {% for error in field.errors %}
+    <span>{{ error }}</span><br>
+    {% endfor %}
+</div>
+{% endif %}
+
+{# Display help text if provided #}
+{% if help_text %}
+<div class="form-text text-muted">
+    {{ help_text }}
+</div>
+{% endif %}
+{% endmacro %}

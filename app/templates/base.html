@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ title }} - LeaveFlow</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"> <!-- Datepicker CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+        <!-- ## -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                {% if current_user.is_authenticated %}
+                {% if current_user.is_manager %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.manager_dashboard') }}">Requests</a>
+                </li>
+                <li class="nav-item"> {# NEW #}
+                    <a class="nav-link" href="{{ url_for('main.manage_balances') }}">Manage Balances</a>
+                </li>
+                <li class="nav-item"> {# NEW #}
+                    <a class="nav-link" href="{{ url_for('main.leave_report') }}">Leave Report</a>
+                </li>
+                {% else %}
+                {# ... employee links ... #}
+                {% endif %}
+                {% endif %}
+            </ul>
+
+
+            <!-- ## -->
+
+
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{{ url_for('main.landing_page') }}">LeaveFlow</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        {% if current_user.is_authenticated %}
+                        {% if current_user.is_manager %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('main.manager_dashboard') }}">Manager Dashboard</a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('main.employee_dashboard') }}">My Requests</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('main.request_leave') }}">New Request</a>
+                        </li>
+                        {% endif %}
+                        {% endif %}
+                    </ul>
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        {% if current_user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                {{ current_user.username }} ({{ current_user.role }})
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{{ url_for('main.logout') }}">Logout</a></li>
+                            </ul>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('main.login') }}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('main.register') }}">Register</a> <!-- Optional -->
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+
+
+    </nav>
+
+    <main class="container">
+        {% include '_flash_messages.html' %} <!-- Include flash messages partial -->
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="mt-5 text-center text-muted">
+        <p>© {{ now.year }} LeaveFlow App</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script> <!-- Datepicker JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
+</html>

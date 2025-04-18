@@ -1,0 +1,11 @@
+/* Example: Add some padding */
+body {
+    padding-bottom: 60px;
+    /* Adjust if you have a fixed footer */
+}
+
+/* Style for required fields maybe */
+.required label::after {
+    content: " *";
+    color: red;
+}
